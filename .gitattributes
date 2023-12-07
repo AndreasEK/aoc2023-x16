@@ -1,0 +1,13 @@
+# Set the default behavior, in case people don't have core.autocrlf set.
+* text=auto
+
+# Explicitly declare text files you want to always be normalized and converted
+# to native line endings on checkout.
+*.LST text
+
+# Files that should be readable from within X16 need to be CR only
+*.TXT text eol=cr
+
+# Denote all files that are truly binary and should not be modified.
+*.BAS binary
+
