@@ -1,0 +1,61 @@
+10 OPEN 1,8,0,"2023021.TXT,P,R"     : REM read input data
+11 GOSUB 1000                       : REM initialize variables
+20 LINPUT#1,IN$                     : REM Read line
+21 C=C+1
+30 GOSUB 10000                      : REM main loop
+100 IF ST<64 GOTO 20                : REM End of File?
+110 CLOSE 1
+120 END
+999 RETURN
+1000 REM ----------------------------------------
+1001 C=0                                         : REM INIT
+1010 DIM CS(3): DIM CN(3): DIM CM(3)
+1020 CM(1)=12 :CM(2)=13 :CM(3)=14
+1999 RETURN
+2000 REM ----------------------------------------
+2001 N1 = ASC(  LEFT$(NR$,1))- ASC("0")          : REM CONVERT nn NR$ -> NR
+2010 N2 = ASC( RIGHT$(NR$,1))- ASC("0")
+2020 NR = N1
+2030 IF N2 >= 0 THEN NR =10*NR + N2
+2040 RETURN
+2100 REM ----------------------------------------
+2101 FOR I=1 TO 3: CS(I)=0: NEXT I               : REM PROCESS SET OF CUBES
+2105 NR$=LEFT$(G$,2): GOSUB 2000                 : REM Next NR of cubes
+2110 IF NR >= 10 THEN OS = 4
+2120 IF NR <  10 THEN OS = 3
+2130 COL$ = MID$(G$,OS,1)                        : REM Save NR to CS of color
+2140 IF COL$= "r" THEN CS(1) = NR : OS=OS + 3
+2150 IF COL$= "g" THEN CS(2) = NR : OS=OS + 5
+2160 IF COL$= "b" THEN CS(3) = NR : OS=OS + 4
+2170 IF LEN(G$) > OS GOTO 2180                   : REM More cubes to parse?
+2171 GC=1                                        : REM Gme complete
+2172 GOTO 2210                                   : REM Return
+2180 SC=0: IF MID$( G$, OS, 1) = ";" THEN SC=1
+2190 G$ = RIGHT$ ( G$, LEN(G$) - OS - 1)
+2200 IF SC=0 GOTO2105
+2210 REM PRINT "SET", CS(1) "red", CS(2) "green", CS(3) "blue"
+2220 RETURN
+3000 REM ---------------------------------------
+3001 FOR I=1 TO 3                                : REM Set Stats
+3010 IF CS(I) > CN(I) THEN CN(I)=CS(I)           : REM Cubes Needed
+3015 IF CS(I) > CM(I) THEN P=0                   : REM Possible Game?
+3020 NEXT I
+3030 RETURN
+10000 REM --------------------------------------
+10001 PRINT LEFT$(IN$,70)                        : REM PROCESS COMPLETE GAME
+10010 SC = 0: GC = 0: P=1
+10011 FOR I=1 TO 3: CN(I)=0: NEXT I              : REM Reset CubesNeeded
+10020 IF MID$(IN$,8,1)<>":" GOTO 10030           : REM Skip "Game nn: "
+10021 G$ = RIGHT$(IN$, LEN(IN$)-9)               : REM       1234567X
+10022 GOTO 10032
+10030 REM -- ELSE --
+10031 G$ = RIGHT$(IN$, LEN(IN$)-8)
+10032 REM -- ENDIF --
+10040 GOSUB 2100                                 : REM Read Set to CS
+10100 GOSUB 3000                                 : REM Set Stats
+10110 IF GC=0 GOTO 10040                         : REM Not Game Complete?
+10120 PO =PO+ CN(1)*CN(2)*CN(3)
+10130 IF P=1 THEN SU =SU + C                     : REM Possible?
+10140 PRINT SU, PO
+10150 PRINT
+11000 RETURN
