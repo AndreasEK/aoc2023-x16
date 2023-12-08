@@ -58,8 +58,8 @@
 230 XD$=MID$(IN$(3),X1,1)
 240 IF XU$<>"." THEN SP = SP+N: PRINT XU$ " (" X1 ";" L-1 ")" N
 250 IF XD$<>"." THEN SP = SP+N: PRINT XD$" ("X1 ";" L+1 ")";N
-260 IF XU$="*" THEN GX=X1:GY=L-1:GOSUB 500
-270 IF XD$="*" THEN GX=X1:GY=L+1:GOSUB 500
+260 IF XU$="*" THEN GX=X1:GY=L-1:GOSUB 480
+270 IF XD$="*" THEN GX=X1:GY=L+1:GOSUB 480
 280 NEXT X1
 290 REM //
 300 REM // Find symbols left XL$ and right XR$
@@ -67,23 +67,21 @@
 320 XR$=MID$(IN$(2),XM+1,1)
 330 IF XL$<>"." THEN SP = SP+N: PRINT XL$+" (";XS-1";"L")";N
 340 IF XR$<>"." THEN SP = SP+N: PRINT XR$+" (";XM+1";"L")";N
-350 IF XL$="*" THENGX=XS-1:GY=L:GOSUB 490
-360 IF XR$="*" THENGX=XM+1:GY=L:GOSUB 490
+350 IF XL$="*" THENGX=XS-1:GY=L:GOSUB 470
+360 IF XR$="*" THENGX=XM+1:GY=L:GOSUB 470
 370 RETURN
 380 REM --------
 390 REM -- Shift IN$ up and read to EOF
 400 L=L+1
 410 FORI=0 TO255: G%( I, (L+1) AND GM%) = 0:NEXTI
-420 REMG%( I, (L+2) AND $3F) = 0
-430 REMG%( I, (L+3) AND $3F) = 0: NEXTI
-440 IN$(1)=IN$(2)
-450 IN$(2)=IN$(3)
-460 IF ST<64 THEN LINPUT#1,IN$(3): IN$(3) = "."+IN$(3)+".": RETURN
-470 E=1:IN$(3) =RPT$(ASC("."),LEN(IN$(2)))
-480 RETURN
-490 REM --------
-500 REM -- Process Gears (GX, GY, N)
-510 GG% =G%( GX, GY AND GM%)
-520 IF GG% > 0 THEN PRINT "**(" GX ";" GY ")" GG%; N:SG =SG+ GG%*N: RETURN
-530 G%(GX,GY AND GM%)=N
-540 RETURN
+420 IN$(1)=IN$(2)
+430 IN$(2)=IN$(3)
+440 IF ST<64 THEN LINPUT#1,IN$(3): IN$(3) = "."+IN$(3)+".": RETURN
+450 E=1:IN$(3) =RPT$(ASC("."),LEN(IN$(2)))
+460 RETURN
+470 REM --------
+480 REM -- Process Gears (GX, GY, N)
+490 GG% =G%( GX, GY AND GM%)
+500 IF GG% > 0 THEN PRINT "**(" GX ";" GY ")" GG%; N:SG =SG+ GG%*N: RETURN
+510 G%(GX,GY AND GM%)=N
+520 RETURN
