@@ -1,36 +1,39 @@
 10 S=TI:GOSUB 20: PRINT"Completed in " INT((TI-S)/60) "s":END
+18 REM ---------------
+19 REM --- Main Loop - NW$(10): Winning Numbers, CC(255): Card Copies, C: Card
 20 DIM NW$(10): DIM CC(255)
 30 OPEN 1,8,0,"2023041.TXT,P,R"
 40 LINPUT#1,IN$
 50 C=C+1: CC(C)=CC(C)+1: PRINT"Card" C "(";CC(C);"\X9Dx):";
 60 GOSUB 110
-70 IF ST>=64 THEN 340
+70 IF ST>=64 THEN 330
 80 GOTO40
-90 REM --------------------
+90 REM ---------------------
 100 REM --- Parsing a Card - N: #winningNumbers, D: position of ':'
 110 N=1: D=1
 120 IF MID$(IN$,D,1)<>":" THEN D=D+1: GOTO 120
 130 NW$=MID$(IN$, 3*N+D-1, 2)
-140 IFNW$="| " THENGOTO200
+140 IFNW$="| " THEN N=N-1: GOTO 200
 150 NW$(N)=NW$
 160 N=N+1
 170 GOTO 130
 180 REM -------------------
-190 REM --- Count Matches - NY$: Your number, M: #matches, GP: Game Points
-200 N=N-1
-210 NN=1: M=0: GP=0
-220 NO=(N+NN)*3+D+1: NY$=MID$(IN$,NO,2)
-230 IFNY$="" THEN 310
-240 FORJ=1 TON
+190 REM --- Count Matches - NY$: Your number, M: #matches, NN: Number to check
+200 M=0
+210 FOR NN=1 TO255
+220 NY$=MID$(IN$,(N+NN)*3+D+1,2)
+230 IF NY$="" THEN 300
+240 FOR J=1 TO N
 250 IFNY$=NW$(J) THEN M=M+1: PRINT " ";NW$(J);: J=N
 260 NEXTJ
-270 NN=NN+1
-280 GOTO 220
-290 REM ----------------
-300 REM --- Card Stats - TP: Total Points
-310 IF M THEN TP = TP + 2 ^(M-1): FORNC=1 TOM:CC(C+NC)=CC(C+NC)+CC(C):NEXTNC
-320 PRINT " (";M;")
-330 RETURN
-340 FOR NC=1 TOC: TC=TC+CC(NC): NEXT NC
-350 PRINT "Total Points:";TP,"Total Cards:";TC
-360 RETURN
+270 NEXTNN
+280 REM ----------------
+290 REM --- Card Stats - TP: Total Points
+300 IF M THEN TP = TP + 2 ^(M-1): FORNC=1 TOM:CC(C+NC)=CC(C+NC)+CC(C):NEXTNC
+310 PRINT " (";M;")
+320 RETURN
+328 REM ------------
+329 REM --- Totals - TC: Total Cards
+330 FOR NC=1 TOC: TC=TC+CC(NC): NEXT NC
+340 PRINT "Total Points:";TP,"Total Cards:";TC
+350 RETURN
